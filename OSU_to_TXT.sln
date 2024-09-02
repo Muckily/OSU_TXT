@@ -1,0 +1,16 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OSU_to_TXT", "OSU_to_TXT\OSU_to_TXT.csproj", "{D92FDADC-FE74-4732-AB06-553C34A5937F}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{D92FDADC-FE74-4732-AB06-553C34A5937F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D92FDADC-FE74-4732-AB06-553C34A5937F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D92FDADC-FE74-4732-AB06-553C34A5937F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D92FDADC-FE74-4732-AB06-553C34A5937F}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
