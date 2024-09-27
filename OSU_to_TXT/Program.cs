@@ -10,7 +10,7 @@ using OsuParsers.Enums.Beatmaps;
 static List<string> GetCountedHitsAsList(Beatmap beatmap, bool printUncountedHits, bool printBeatInt)
 {
     List<string> hits = new List<string>();
-            
+
     int length = beatmap.HitObjects.Count;
     string hitType = "";
     int hitInt = 0;
@@ -70,7 +70,7 @@ static List<string> GetCountedHitsAsList(Beatmap beatmap, bool printUncountedHit
         else
         {
             HitObject obj = beatmap.HitObjects[i];
-            foreach(PropertyDescriptor descriptor in TypeDescriptor.GetProperties(obj))
+            foreach (PropertyDescriptor descriptor in TypeDescriptor.GetProperties(obj))
             {
                 string name = descriptor.Name;
                 object value = descriptor.GetValue(obj);
@@ -91,19 +91,19 @@ static void WriteListToTxt(List<string> list, String fileName)
     int maxTrackSplitNum = Convert.ToInt32(Math.Ceiling(Double.Parse(lastItemAsArray[0]) / 10000.0));
 
     Dictionary<int, List<string>> splitList = new Dictionary<int, List<string>>();
-    for (int i=0; i<maxTrackSplitNum; i++)
+    for (int i = 0; i < maxTrackSplitNum; i++)
     {
         splitList.Add(i, new List<string>());
         // Console.WriteLine(i.ToString());
     }
-    
+
     foreach (string line in list)
     {
         string[] lineAsArray = line.Split(' ');
         int trackSplitNum = Convert.ToInt32(Math.Ceiling(Double.Parse(lineAsArray[0]) / 10000.0));
         if (trackSplitNum != 0)
         {
-            splitList[trackSplitNum-1].Add(line);
+            splitList[trackSplitNum - 1].Add(line);
         }
     }
 
@@ -128,7 +128,7 @@ static Beatmap WriteTxtToNewBeatmap(List<String> txtList)
         List<String> oneHit = txtList[i].Split(' ').ToList();
         //Console.WriteLine(txtList[i]);
         //Console.WriteLine(oneHit[0] + ", " + oneHit[1]);
-                
+
         HitSoundType oneHitSound = HitSoundType.None;
         Extras extras = new Extras();
         String hitObjectType = "";
@@ -154,11 +154,14 @@ static Beatmap WriteTxtToNewBeatmap(List<String> txtList)
         }
         if (oneHit[1] == "4")
         {
-            hitObjectType = "TaikoSpinner";
+            // hitObjectType = "TaikoHit";
+            // hitObjectType = "TaikoSpinner";
         }
         if (oneHit[1] == "5")
         {
-            hitObjectType = "TaikoDrumroll";
+            // hitObjectType = "TaikoHit";
+            // hitObjectType = "TaikoSpinner";
+            // hitObjectType = "TaikoDrumroll";
         }
 
         if (hitObjectType == "TaikoHit")
@@ -197,7 +200,7 @@ static void BeatmapToTxt(string path)
                 Console.WriteLine(item);
                 Beatmap beatmap = BeatmapDecoder.Decode(item);
 
-                string txtItem = item.Replace(".osu", ""); 
+                string txtItem = item.Replace(".osu", "");
                 WriteListToTxt(GetCountedHitsAsList(beatmap, false, false), txtItem);
             }
         }
@@ -221,7 +224,7 @@ static void renameMp3(string path)
                 int i = source.IndexOf(toRemove);
                 if (i >= 0)
                 {
-                    result= source.Remove(i, toRemove.Length);
+                    result = source.Remove(i, toRemove.Length);
                 }
                 File.Move(item, result);
             }
@@ -245,8 +248,31 @@ static void deteleAllTxt(string path)
     }
 }
 
+static void export_new_beatmap(string txtpath)
+{
+    List<string> allLinesText = File.ReadAllLines(txtpath).ToList();
+    Beatmap newBeatmap = WriteTxtToNewBeatmap(allLinesText);
+    newBeatmap.MetadataSection.Title = "GodTest";
+    newBeatmap.GeneralSection.AudioFilename = "Polyphia - Playing God (Official Music Video).mp3";
+    TimingPoint FakeTimingPoint = new TimingPoint();
+    FakeTimingPoint.BeatLength = 400.0f;
+    FakeTimingPoint.CustomSampleSet = 0;
+    FakeTimingPoint.Inherited = false;
+    FakeTimingPoint.Effects = Effects.None;
+    FakeTimingPoint.Offset = 0;
+    FakeTimingPoint.SampleSet = SampleSet.Normal;
+    FakeTimingPoint.TimeSignature = TimeSignature.SimpleQuadruple;
+    FakeTimingPoint.Volume = 100;
+    newBeatmap.TimingPoints.Add(FakeTimingPoint);
+    newBeatmap.Save(@"pathToNewBeatmap.osu");
+}
+
 string datapath = "SR";
+string txtpath = "test.txt";
 
 // renameMp3(datapath);
 // deteleAllTxt(datapath);
-BeatmapToTxt(datapath);
+
+// BeatmapToTxt(datapath);
+
+export_new_beatmap(txtpath);
