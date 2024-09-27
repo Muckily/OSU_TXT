@@ -349,14 +349,12 @@ static void Culler(string path)
 }
 
 string unzippedFolderPath = "AllUnzipped";
-string datapath = "SR";
 string txtpath = "test.txt";
 
 Culler(unzippedFolderPath);
-
-// renameMp3(datapath);
-// deteleAllTxt(datapath);
-
-// BeatmapToTxt(datapath);
+BeatmapToTxt(unzippedFolderPath);
 
 // export_new_beatmap(txtpath);
+
+// renameMp3(unzippedFolderPath);
+// deteleAllTxt(unzippedFolderPath);
