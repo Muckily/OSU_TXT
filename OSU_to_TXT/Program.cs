@@ -252,8 +252,8 @@ static void export_new_beatmap(string txtpath)
 {
     List<string> allLinesText = File.ReadAllLines(txtpath).ToList();
     Beatmap newBeatmap = WriteTxtToNewBeatmap(allLinesText);
-    newBeatmap.MetadataSection.Title = "GodTest";
-    newBeatmap.GeneralSection.AudioFilename = "Polyphia - Playing God (Official Music Video).mp3";
+    newBeatmap.MetadataSection.Title = "Test";
+    newBeatmap.GeneralSection.AudioFilename = "Audio.mp3";
     TimingPoint FakeTimingPoint = new TimingPoint();
     FakeTimingPoint.BeatLength = 400.0f;
     FakeTimingPoint.CustomSampleSet = 0;
@@ -267,12 +267,96 @@ static void export_new_beatmap(string txtpath)
     newBeatmap.Save(@"pathToNewBeatmap.osu");
 }
 
+static bool IsTaikoMap(string path)
+{
+    bool result = false;
+    Beatmap beatmap = BeatmapDecoder.Decode(path);
+    //Console.WriteLine(beatmap.GeneralSection.Mode);
+    if (beatmap.GeneralSection.Mode == Ruleset.Taiko)
+    {
+        result = true;
+    }
+    else
+    {
+        //Console.WriteLine(path);
+    }
+    return result;
+}
+
+static void DeleteDirectory(string path)
+{
+    string[] folders = Directory.GetDirectories(path);
+    int length = folders.Length;
+    for (int i = 0; i < length; i++)
+    {
+        string[] files = Directory.GetFiles(folders[i]);
+        foreach (var item in files)
+        {
+            File.SetAttributes(item, FileAttributes.Normal);
+        }
+    }
+
+    foreach (string directory in Directory.GetDirectories(path))
+    {
+        DeleteDirectory(directory);
+    }
+
+    try
+    {
+        Directory.Delete(path, true);
+    }
+    catch (IOException) 
+    {
+        Directory.Delete(path, true);
+    }
+    catch (UnauthorizedAccessException)
+    {
+        Directory.Delete(path, true);
+    }
+}
+
+static void Culler(string path)
+{
+    string[] folders = Directory.GetDirectories(path);
+
+    int length = folders.Length;
+    for (int i = 0; i < length; i++)
+    {
+        string[] files = Directory.GetFiles(folders[i]);
+        foreach (var item in files)
+        {
+            if (item.Contains(".jpg") || item.Contains(".png") || item.Contains(".mp4") || item.Contains(".avi") || item.Contains(".wav") || item.Contains(".osb"))
+            {
+                File.SetAttributes(item, FileAttributes.Normal);
+                File.Delete(item);
+            }
+
+            if (item.Contains(".osu"))
+            {
+                if (!IsTaikoMap(item))
+                {
+                    File.SetAttributes(item, FileAttributes.Normal);
+                    File.Delete(item);
+                }
+            }
+        }
+        string[] extrafolders = Directory.GetDirectories(folders[i]);
+        foreach (var item in extrafolders)
+        {
+            DeleteDirectory(item);
+        }
+    }
+}
+
+string unzippedFolderPath = "AllUnzipped";
 string datapath = "SR";
 string txtpath = "test.txt";
+
+Culler(unzippedFolderPath);
 
 // renameMp3(datapath);
 // deteleAllTxt(datapath);
 
 // BeatmapToTxt(datapath);
 
-export_new_beatmap(txtpath);
+// export_new_beatmap(txtpath);
